@@ -13,10 +13,11 @@ class GameCell:
 
     def __repr__(self):
         if self._is_flagged:
-            return Back.WHITE + Style.DIM + emoji.emojize(":triangular_flag:") + Style.RESET_ALL
+            return Style.DIM + Back.CYAN + emoji.emojize(":play_button:") + Style.RESET_ALL
+        elif self._is_open:
+            return Style.DIM + Back.CYAN + self.label
         else:
-            return self.label()
-
+            return Style.DIM + Back.CYAN + emoji.emojize(":blue_square:") + Style.RESET_ALL
 
     @property
     def label(self) -> str:
@@ -41,24 +42,13 @@ class GameCell:
         else:
             color = ""
             if name == 0:
-                name = " "
-            elif name == 1:
-                color = Style.BRIGHT + Fore.GREEN
-            elif name == 2:
-                color = Style.NORMAL + Fore.GREEN
-            elif name == 3:
-                color = Fore.GREEN
-            elif name == 4:
-                color = Style.BRIGHT + Fore.BLUE
-            elif name == 5:
-                color = Style.NORMAL + Fore.BLUE
-            elif name == 6:
-                color = Fore.BLUE
-            elif name == 7:
-                color = Fore.RED
-            elif name == 8:
-                color = Style.BRIGHT + Fore.RED
-            self._label = Style.DIM + Back.BLACK + color + str(name) + Style.RESET_ALL
+                name = emoji.emojize(":black_square_button:")
+            elif 0 < name < 9:
+                name = emoji.emojize(":keycap_" + str(name) + ":")
+            else:
+                raise ValueError("Impossible number of adjacent mines. Must be between 0 and 9 exclusive.")
+
+            self._label = Style.DIM + Back.BLUE + color + str(name) + Style.RESET_ALL
 
 
     @property
@@ -86,7 +76,6 @@ class GameCell:
         """
         if not self._is_flagged:
             self._is_flagged = True
-            self.label = "F"
         else:
             self._is_flagged = False
 
@@ -98,8 +87,19 @@ class GameCell:
             bool: Whether or not you opened a mine.
         """
         self._is_open = True
+        self._is_flagged = False
         return self.is_mine
 
 if __name__ == "__main__":
     c = GameCell(name=0,mine=True)
-    print(c.label)
+    print(c)
+    c.toggle()
+    print(c)
+    boom = c.open()
+    print(c)
+    c = GameCell(name=8)
+    print(c)
+    c.toggle()
+    print(c)
+    boom = c.open()
+    print(c)
