@@ -6,6 +6,7 @@ class GameCell:
     """
     _is_flagged = False
     _is_open = False
+    _int_name = 0
 
     def __init__(self, name: int, mine=False):
         self.is_mine = mine
@@ -13,7 +14,7 @@ class GameCell:
 
     def __repr__(self):
         if self._is_flagged:
-            return Style.DIM + Back.CYAN + emoji.emojize(":play_button:") + Style.RESET_ALL
+            return Style.DIM + Back.CYAN + emoji.emojize(":play_button:") + " " + Style.RESET_ALL
         elif self._is_open:
             return Style.DIM + Back.CYAN + self.label
         else:
@@ -38,13 +39,15 @@ class GameCell:
             name (str): Label string
         """
         if self.is_mine:
+            self._int_name = -1
             self._label = Style.BRIGHT + Back.RED + emoji.emojize(":bomb:") + Style.RESET_ALL
         else:
             color = ""
+            self._int_name = int(name)
             if int(name) == 0:
                 name = emoji.emojize(":black_square_button:")
             elif 0 < int(name) < 9:
-                name = emoji.emojize(":keycap_" + name + ":")
+                name = emoji.emojize(":keycap_" + name + ":") + " "
             else:
                 raise ValueError("Impossible number of adjacent mines. Must be between 0 and 9 exclusive.")
 
@@ -70,6 +73,13 @@ class GameCell:
         """
         self._is_mine = mine
 
+    def is_open(self) -> bool:
+        return self._is_open
+
+    def is_safe(self) -> bool:
+        if self._int_name == 0:
+            return True
+        return False
 
     def toggle(self):
         """Toggle whether the cell is flagged. This is used when opening areas
