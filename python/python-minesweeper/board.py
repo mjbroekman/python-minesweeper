@@ -10,7 +10,9 @@ class GameBoard:
     _min_mines = 1 # ( _x_size - 1 ) * ( _y_size - 1 )
     _max_mines = 3 # ( _x_size * _y_size ) - 1
     _coord_list = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    _board = []
+    _board_cells = []
+    _mine_cells = []
+    _board = {}
 
     def __init__(self, x_size: int, y_size: int, num_mines=-1):
         """Create the game board
@@ -25,6 +27,23 @@ class GameBoard:
         self.y_size = y_size
         self.mines_left = num_mines
         self._create_board()
+
+    def __repr__(self):
+        _display = " "
+        if self.x_size > 9:
+            _display += " " * int((self.x_size - 9) / 2)
+        _display += "PySweeper\n"
+        _display += "  "
+        _display += "".join([ " " + y for y in self._coord_list[:self.y_size] ])
+        _display += "\n"
+        _display += " /" + "-" * ((self.y_size * 2)) + "\\\n"
+        for x in self._coord_list[:self.x_size]:
+            _display += x + "|"
+            for y in self._coord_list[:self.y_size]:
+                _display += str(self._board[(x,y)])
+            _display += "|\n"
+        _display += " \\" + "-" * ((self.y_size * 2))  + "/\n"
+        return _display
 
     def _get_term_size(self):
         """(private) Get the size of the terminal for boundary checking
@@ -88,20 +107,43 @@ class GameBoard:
     def _create_board(self):
         """Creates the board
         """
-        _board_cells = [ (x,y) for x in self._coord_list[:self.x_size] for y in self._coord_list[:self.y_size] ]
-        _mine_cells = random.sample(_board_cells, self.mines_left)
-        for _cell in _board_cells:
-            if _cell in _mine_cells:
+        self._board_cells = [ (x,y) for x in self._coord_list[:self.x_size] for y in self._coord_list[:self.y_size] ]
+        self._mine_cells = random.sample(self._board_cells, self.mines_left)
+        for _cell in self._board_cells:
+            if _cell in self._mine_cells:
                 self._board[_cell] = GameCell(name="M",mine=True)
             else:
-                _cell_x = self._coord_list.index(_cell[0])
-                _cell_y = self._coord_list.index(_cell[1])
-                # based on https://stackoverflow.com/questions/1620940/determining-neighbours-of-cell-two-dimensional-list
-                _neighbor_mines = [(self._coord_list[x2],self._coord_list[y2]) for x2 in range(_cell_x-1,_cell_x+2) for y2 in range(_cell_y-1,_cell_y+2)
-                                    if ((_cell_x != x2 or _cell_y != y2) and
-                                        (0 <= x2 <= self.x_size) and
-                                        (0 <= y2 <= self.y_size) and
-                                        (self._coord_list[x2],self._coord_list[y2]) in _mine_cells
-                                        )]
+                _neighbor_mines = list(filter(lambda cell: cell in self._mine_cells, self._get_neighbors(_cell)))
                 self._board[_cell] = GameCell(name=str(len(_neighbor_mines)),mine=False)
 
+    def _get_neighbors(self,_cell):
+        """Get the neighboring cells in the board
+           based on https://stackoverflow.com/questions/1620940/determining-neighbours-of-cell-two-dimensional-list
+        """
+        _cell_x = self._coord_list.index(_cell[0])
+        _cell_y = self._coord_list.index(_cell[1])
+        return [(self._coord_list[x2],self._coord_list[y2]) for x2 in range(_cell_x-1,_cell_x+2) for y2 in range(_cell_y-1,_cell_y+2)
+                                    if ((_cell_x != x2 or _cell_y != y2) and
+                                        (0 <= x2 <= self.x_size - 1) and
+                                        (0 <= y2 <= self.y_size - 1)
+                                        )]
+
+
+    def open(self, x_loc: str, y_loc: str):
+        if not self._board[(x_loc, y_loc)].open():
+            if self._board[(x_loc, y_loc)].is_safe():
+                for cell in list(filter(lambda cell: not self._board[cell].is_open(), self._get_neighbors((x_loc, y_loc)))):
+                    self.open(cell[0],cell[1])
+            print(self)
+        else:
+            print("Too bad. You hit a mine. Better luck next time.")
+            self._reveal()
+
+    def flag(self, x_loc: str, y_loc: str):
+        self._board[(x_loc, y_loc)].toggle()
+        print(self)
+
+    def _reveal(self):
+        for _cell in self._board.keys():
+            self._board[_cell].open()
+        print(self)
