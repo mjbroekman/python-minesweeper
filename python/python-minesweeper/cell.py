@@ -31,7 +31,7 @@ class GameCell:
 
 
     @label.setter
-    def label(self, name: int):
+    def label(self, name: str):
         """Sets the label for the cell
 
         Args:
@@ -41,14 +41,14 @@ class GameCell:
             self._label = Style.BRIGHT + Back.RED + emoji.emojize(":bomb:") + Style.RESET_ALL
         else:
             color = ""
-            if name == 0:
+            if int(name) == 0:
                 name = emoji.emojize(":black_square_button:")
-            elif 0 < name < 9:
-                name = emoji.emojize(":keycap_" + str(name) + ":")
+            elif 0 < int(name) < 9:
+                name = emoji.emojize(":keycap_" + name + ":")
             else:
                 raise ValueError("Impossible number of adjacent mines. Must be between 0 and 9 exclusive.")
 
-            self._label = Style.DIM + Back.BLUE + color + str(name) + Style.RESET_ALL
+            self._label = Style.DIM + Back.BLUE + color + name + Style.RESET_ALL
 
 
     @property
