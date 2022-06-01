@@ -1,4 +1,4 @@
-from colorama import Fore, Back, Style
+from colorama import Back, Style
 import emoji
 
 class GameCell:
@@ -8,17 +8,30 @@ class GameCell:
     _is_open = False
     _int_name = 0
 
-    def __init__(self, name: int, mine=False):
+    def __init__(self, name, mine=False):
+        """Constructor
+
+        Args:
+            name: value to set the label to (number of neighbor mines or M if we are a mine)
+            mine (bool, optional): Are we a mine? Defaults to False.
+        """
         self.is_mine = mine
         self.label = name 
 
+
     def __repr__(self):
+        """Representation matters
+
+        Returns:
+            str: String representation of the cell
+        """
         if self._is_flagged:
             return Style.DIM + Back.CYAN + emoji.emojize(":play_button:") + " " + Style.RESET_ALL
         elif self._is_open:
             return Style.DIM + Back.CYAN + self.label
         else:
             return Style.DIM + Back.CYAN + emoji.emojize(":blue_square:") + Style.RESET_ALL
+
 
     @property
     def label(self) -> str:
@@ -73,13 +86,31 @@ class GameCell:
         """
         self._is_mine = mine
 
+
+    def is_flagged(self):
+        """Returns whether we have been flagged as a mine or not
+        """
+        return self._is_flagged
+
     def is_open(self) -> bool:
+        """Have we been opened already. Used for filtering neighbor cells.
+
+        Returns:
+            bool: self._is_open
+        """
         return self._is_open
 
+
     def is_safe(self) -> bool:
+        """Are we completely safe? i.e. Are we empty and have no mines in any neighboring cell?
+
+        Returns:
+            bool: True if we have no neighboring cells containing a mine, False otherwise.
+        """
         if self._int_name == 0:
             return True
         return False
+
 
     def toggle(self):
         """Toggle whether the cell is flagged. This is used when opening areas
@@ -91,7 +122,7 @@ class GameCell:
 
 
     def open(self) -> bool:
-        """Open the cell
+        """Open the cell.
 
         Returns:
             bool: Whether or not you opened a mine.
@@ -99,17 +130,3 @@ class GameCell:
         self._is_open = True
         self._is_flagged = False
         return self.is_mine
-
-if __name__ == "__main__":
-    c = GameCell(name=0,mine=True)
-    print(c)
-    c.toggle()
-    print(c)
-    boom = c.open()
-    print(c)
-    c = GameCell(name=8)
-    print(c)
-    c.toggle()
-    print(c)
-    boom = c.open()
-    print(c)
