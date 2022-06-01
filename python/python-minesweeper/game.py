@@ -57,6 +57,12 @@ def main(argv):
                 else:
                     print("Invalid coordinates: " + move[1].upper() + " " + move[2].upper())
                     time.sleep(2.0)
+        
+        board.reveal()
+        print(board)
+        print("CONGRATULATIONS! You successfully found all the mines without triggering them!")
+        print("\n\n")
+        exit()
 
     except ValueError as e:
         exit(e)
