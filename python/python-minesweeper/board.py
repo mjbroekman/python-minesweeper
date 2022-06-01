@@ -28,15 +28,29 @@ class GameBoard:
         self.mines_left = num_mines
         self._create_board()
 
+
     def __repr__(self):
+        """Representation matters
+
+        Returns:
+            str: String representation of the board
+        """
+        if os.name == "posix":
+            _ = os.system('clear')
+        elif os.name == "nt":
+            _ = os.system('cls')
+        else:
+            pass
+
         _display = " "
         if self.x_size > 9:
-            _display += " " * int((self.x_size - 9) / 2)
+            _display += " " * int(((self.y_size * 2) - 9) / 2)
         _display += "PySweeper\n"
         _display += "  "
         _display += "".join([ " " + y for y in self._coord_list[:self.y_size] ])
         _display += "\n"
-        _display += " /" + "-" * ((self.y_size * 2)) + "\\\n"
+        _display += " /" + "-" * ((self.y_size * 2)) + "\\"
+        _display += "   Mines Left: " + (self.mines_left - self._num_flagged())
         for x in self._coord_list[:self.x_size]:
             _display += x + "|"
             for y in self._coord_list[:self.y_size]:
@@ -44,6 +58,7 @@ class GameBoard:
             _display += "|\n"
         _display += " \\" + "-" * ((self.y_size * 2))  + "/\n"
         return _display
+
 
     def _get_term_size(self):
         """(private) Get the size of the terminal for boundary checking
@@ -70,10 +85,24 @@ class GameBoard:
 
     @property
     def mines_left(self) -> int:
+        """(property) Number of mines to find
+
+        Returns:
+            int: number of mines remaining
+        """
         return self._mines_left
     
+
     @mines_left.setter
     def mines_left(self, mines: int):
+        """(setter) Set the number of mines remaining
+
+        Args:
+            mines (int): Number of mines left to flag
+
+        Raises:
+            ValueError: Trying to stuff too many mines into the board
+        """
         if mines < 1:
             mines = random.randrange(1, (self.x_size * self.y_size))
 
@@ -82,27 +111,58 @@ class GameBoard:
 
         self._mines_left = mines
 
+
     @property
     def x_size(self) -> int:
+        """(property) Get the size in rows of the board
+
+        Returns:
+            int: number of rows
+        """
         return self._x_size
     
+
     @x_size.setter
     def x_size(self, size: int):
+        """(setter) Set the size in rows of the board
+
+        Args:
+            size (int): number of rows
+
+        Raises:
+            ValueError: Given size is outside the bounds
+        """
         if 1 < size <= self._max_x:
             self._x_size = size
         else:
             raise ValueError("Board width must be between 2 and " + str(self._max_x) + " cells.")
 
+
     @property
     def y_size(self) -> int:
+        """(property) Get the size in columns of the board
+
+        Returns:
+            int: number of columns
+        """
         return self._y_size
     
+
     @y_size.setter
     def y_size(self, size: int):
+        """Set the Y dimension
+
+        Args:
+            size (int): number of columns
+
+        Raises:
+            ValueError: Given size is outside the bounds
+        """
         if 1 < size <= self._max_y:
             self._y_size = size
         else:
             raise ValueError("Board height must be between 2 and " + str(self._max_y) + " cells")
+
 
     def _create_board(self):
         """Creates the board
@@ -115,6 +175,7 @@ class GameBoard:
             else:
                 _neighbor_mines = list(filter(lambda cell: cell in self._mine_cells, self._get_neighbors(_cell)))
                 self._board[_cell] = GameCell(name=str(len(_neighbor_mines)),mine=False)
+
 
     def _get_neighbors(self,_cell):
         """Get the neighboring cells in the board
@@ -130,6 +191,12 @@ class GameBoard:
 
 
     def open(self, x_loc: str, y_loc: str):
+        """Open (possibly recursively) a cell
+
+        Args:
+            x_loc (str): X coordinate
+            y_loc (str): Y coordinate
+        """
         if not self._board[(x_loc, y_loc)].open():
             if self._board[(x_loc, y_loc)].is_safe():
                 for cell in list(filter(lambda cell: not self._board[cell].is_open(), self._get_neighbors((x_loc, y_loc)))):
@@ -139,11 +206,30 @@ class GameBoard:
             print("Too bad. You hit a mine. Better luck next time.")
             self._reveal()
 
+
+    def _num_flagged(self) -> int:
+        """Gets the number of cells that have been flagged as potentially mined
+
+        Returns:
+            int: number of mines
+        """
+        return len(list(filter(lambda cell: self._board[cell].is_flagged(), self._board_cells)))
+
+
     def flag(self, x_loc: str, y_loc: str):
+        """Flag a cell as likely to have a mine
+
+        Args:
+            x_loc (str): X coordinate
+            y_loc (str): Y coordinate
+        """
         self._board[(x_loc, y_loc)].toggle()
         print(self)
 
+
     def _reveal(self):
+        """Reveal the full map
+        """
         for _cell in self._board.keys():
             self._board[_cell].open()
         print(self)
