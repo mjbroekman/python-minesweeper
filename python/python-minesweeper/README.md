@@ -20,3 +20,5 @@ Make it as hard or as easy as you want with the following limitations:
 - There MUST be at least 1 cell in the board that does not contain a mine
 - The board is limited to (at most) slightly smaller than your terminal window... or 36 rows and columns... which ever is smaller
 
+
+[Demo video](https://youtu.be/r56bWaF3K6E)
