@@ -50,7 +50,7 @@ class GameBoard:
         _display += "".join([ " " + y for y in self._coord_list[:self.y_size] ])
         _display += "\n"
         _display += " /" + "-" * ((self.y_size * 2)) + "\\"
-        _display += "   Mines Left: " + (self.mines_left - self._num_flagged())
+        _display += "   Mines Left: " + str(self.mines_left - self._num_flagged()) + "\n"
         for x in self._coord_list[:self.x_size]:
             _display += x + "|"
             for y in self._coord_list[:self.y_size]:
