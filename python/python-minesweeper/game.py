@@ -1,3 +1,19 @@
+"""PySweeper Game
+
+Author:
+    Maarten Broekman - https://github.com/mjbroekman
+
+To play:
+$ python game.py --rows ?? --cols ?? --mines ??
+
+where:
+  --rows is the number of rows you want (2 to 36, depending on the height of your terminal window)
+  --cols is the number of columns you want (2 to 36, depending on the width of your terminal window)
+  --mines is the number of 'splody cells you want ( between 1 and (rows*cols)-1 ) (optional)
+       if you don't specifiy the number of mines, the game will choose it for you....
+
+"""
+
 import sys
 import argparse
 import time

@@ -1,3 +1,14 @@
+"""GameBoard class
+
+Author:
+    Maarten Broekman - https://github.com/mjbroekman
+
+Raises:
+    ValueError if the screen size doesn't fit a board or if there are too many mines or if the board is too wide/tall
+
+Returns:
+    GameBoard: a GameBoard object
+"""
 import os
 import random
 
@@ -135,7 +146,7 @@ class GameBoard:
         if 1 < size <= self._max_r:
             self._r_size = size
         else:
-            raise ValueError("Board width must be between 2 and " + str(self._max_r) + " cells.")
+            raise ValueError("Board height must be between 2 and " + str(self._max_r) + " cells.")
 
 
     @property
@@ -150,7 +161,7 @@ class GameBoard:
 
     @c_size.setter
     def c_size(self, size: int):
-        """Set the Y dimension
+        """Set the size in columns of the board
 
         Args:
             size (int): number of columns
@@ -161,7 +172,7 @@ class GameBoard:
         if 1 < size <= self._max_c:
             self._c_size = size
         else:
-            raise ValueError("Board height must be between 2 and " + str(self._max_c) + " cells")
+            raise ValueError("Board width must be between 2 and " + str(self._max_c) + " cells")
 
 
     def _create_board(self):

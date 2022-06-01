@@ -1,3 +1,14 @@
+"""GameCell class
+
+Author:
+    Maarten Broekman - https://github.com/mjbroekman
+
+Raises:
+    ValueError if there are an impossible number of adjacent mines (more than 8)
+
+Returns:
+    a Gamecell object
+"""
 from colorama import Back, Style
 import emoji
 
