@@ -53,8 +53,8 @@ class GameBoard:
         _display += "   Mines Left: " + str(self.mines_left - self._num_flagged()) + "\n"
         for r in self._coord_list[:self.r_size]:
             _display += r + "|"
-            for y in self._coord_list[:self.c_size]:
-                _display += str(self._board[(x,y)])
+            for c in self._coord_list[:self.c_size]:
+                _display += str(self._board[(r,c)])
             _display += "|\n"
         _display += " \\" + "-" * ((self.c_size * 2))  + "/\n"
         return _display
@@ -216,6 +216,19 @@ class GameBoard:
             int: number of mines
         """
         return len(list(filter(lambda cell: self._board[cell].is_flagged(), self._board_cells)))
+
+
+    def complete(self) -> bool:
+        """Returns whether or not the board as been completed
+
+        Returns:
+            bool: All cells are open or flagged
+        """
+        return len(self._board_cells) == (self._num_flagged() + len(list(filter(lambda cell: self._board[cell].is_open(), self._board_cells))))
+    
+
+    def is_cell(self, row: str, col: str):
+        return (row, col) in self._board_cells
 
 
     def flag(self, row: str, col: str):
