@@ -27,7 +27,10 @@ class GameCell:
             mine (bool, optional): Are we a mine? Defaults to False.
         """
         self.is_mine = mine
-        self.label = name 
+        try:
+            self.label = name 
+        except ValueError as e:
+            exit(e)
 
 
     def __repr__(self):
@@ -39,7 +42,7 @@ class GameCell:
         if self._is_flagged:
             return Style.DIM + Back.CYAN + emoji.emojize(":play_button:") + " " + Style.RESET_ALL
         elif self._is_open:
-            return Style.DIM + Back.CYAN + self.label
+            return Style.DIM + Back.CYAN + self.label + Style.RESET_ALL
         else:
             return Style.DIM + Back.CYAN + emoji.emojize(":blue_square:") + Style.RESET_ALL
 
@@ -66,7 +69,6 @@ class GameCell:
             self._int_name = -1
             self._label = Style.BRIGHT + Back.RED + emoji.emojize(":bomb:") + Style.RESET_ALL
         else:
-            color = ""
             self._int_name = int(name)
             if int(name) == 0:
                 name = emoji.emojize(":black_square_button:")
@@ -75,7 +77,7 @@ class GameCell:
             else:
                 raise ValueError("Impossible number of adjacent mines. Must be between 0 and 9 exclusive.")
 
-            self._label = Style.DIM + Back.BLUE + color + name + Style.RESET_ALL
+            self._label = name
 
 
     @property
