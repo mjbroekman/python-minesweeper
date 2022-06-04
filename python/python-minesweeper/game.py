@@ -20,6 +20,7 @@ import argparse
 import time
 
 from board import GameBoard
+from tkboard import GameBoardTk
 
 def main(argv):
     """Parse command-line arguments
@@ -60,8 +61,8 @@ def main(argv):
     args = parser.parse_args(argv)
     try:
         if args.tk:
-            from board import GameBoardTk
             board = GameBoardTk(args.rows,args.cols,args.mines)
+
             # import _tkinter, tkinter, tkinter.constants in a new GameBoard class
         else:
             board = GameBoard(args.rows,args.cols,args.mines)
