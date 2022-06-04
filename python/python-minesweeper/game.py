@@ -14,11 +14,11 @@ where:
 
 """
 
+import os
 import sys
 import argparse
 import time
 
-from cell import GameCell
 from board import GameBoard
 
 def main(argv):
@@ -54,15 +54,14 @@ def main(argv):
     parser.add_argument(
         "--tk",
         "--gui",
-        action="store",
+        action="store_true",
         help="Use a Tk GUI instead of the command-line",
-        default=False,
-        type=bool
     )
     args = parser.parse_args(argv)
     try:
         if args.tk:
-            sys.path.insert(0,'/opt/homebrew/Cellar/python-tk@3.9/3.9.13/libexec')
+            from board import GameBoardTk
+            board = GameBoardTk(args.rows,args.cols,args.mines)
             # import _tkinter, tkinter, tkinter.constants in a new GameBoard class
         else:
             board = GameBoard(args.rows,args.cols,args.mines)
@@ -100,6 +99,10 @@ def main(argv):
 
 if __name__ == '__main__':
     try:
+        if os.name == "nt":
+            print('run MineSweeper.exe instead')
+            exit()
+        
         main(sys.argv[1:])
     except (KeyboardInterrupt, EOFError):
         print('Exiting...')
