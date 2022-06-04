@@ -40,4 +40,4 @@ For best results, use the Terminal.app in MacOS
 
 Demo Video
 ==========
-[Demo video](https://youtu.be/r56bWaF3K6E)
+![Demo video](https://youtu.be/r56bWaF3K6E)
