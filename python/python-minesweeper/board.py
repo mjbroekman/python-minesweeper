@@ -185,13 +185,13 @@ class GameBoard:
         self._mine_cells = random.sample(self._board_cells, self.mines_left)
         for _cell in self._board_cells:
             if _cell in self._mine_cells:
-                self._board[_cell] = self._init_cell(name="M",mine=True)
+                self._board[_cell] = self._init_cell(coords=_cell,name="M",mine=True)
             else:
                 _neighbor_mines = list(filter(lambda cell: cell in self._mine_cells, self._get_neighbors(_cell)))
-                self._board[_cell] = self._init_cell(name=str(len(_neighbor_mines)),mine=False)
+                self._board[_cell] = self._init_cell(coords=_cell,name=str(len(_neighbor_mines)),mine=False)
 
 
-    def _init_cell(self,name,mine:bool):
+    def _init_cell(self,coords,name,mine:bool):
         """Return a GameCell on the command-line
         """
         return GameCell(name,mine)
