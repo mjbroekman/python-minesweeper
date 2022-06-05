@@ -23,9 +23,10 @@ except ModuleNotFoundError as e:
 
 from board import GameBoard
 
-class GameBoardTk(GameBoard, tk.Frame):
+class GameBoardTk(tk.Frame, GameBoard):
     _screen = None
     _root = None
+    _buttons = {}
 
     def __init__(self, r_size: int, c_size: int, num_mines=-1):
         """Create the game board
@@ -40,6 +41,7 @@ class GameBoardTk(GameBoard, tk.Frame):
         self.c_size = c_size
         self.mines_left = num_mines
         self._create_board()
+        self._root.mainloop()
 
     def _get_screen_size(self):
         """Gets the screen size and converts it to the maximum number of rows and columns
@@ -53,13 +55,19 @@ class GameBoardTk(GameBoard, tk.Frame):
         self._max_c = int(_tmp.winfo_screenmmwidth() / 5) - 5
         _tmp.destroy()
 
-    def _create_board(self,master=None):
+    def _create_board(self):
         """Initialize the backend gameboard
         """
         self._root = tk.Tk(baseName="PySweeper")
-        tk.Frame.__init__(self._root)
+
+        super().__init__(self._root)
+        self._root.title = "PySweeper"
+        self.pack(side='top')
         super()._create_board()
     
 
-    def _init_cell(self, name, mine: bool):
+    def _init_cell(self, coords, name, mine: bool):
+        self._buttons[coords] = tk.Button(self)
+        self._buttons[coords]['text'] = str(name) + "/" + str(mine)
+        self._buttons[coords].pack(side='top')
         pass
