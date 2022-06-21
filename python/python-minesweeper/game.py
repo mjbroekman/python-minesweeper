@@ -20,7 +20,6 @@ import argparse
 import time
 
 from board import GameBoard
-from tkboard import GameBoardTk
 
 def main(argv):
     """Parse command-line arguments
@@ -52,47 +51,36 @@ def main(argv):
         default=-1,
         type=int
     )
-    parser.add_argument(
-        "--tk",
-        "--gui",
-        action="store_true",
-        help="Use a Tk GUI instead of the command-line",
-    )
     args = parser.parse_args(argv)
     try:
-        if args.tk:
-            board = GameBoardTk(args.rows,args.cols,args.mines)
-
-            # import _tkinter, tkinter, tkinter.constants in a new GameBoard class
-        else:
-            board = GameBoard(args.rows,args.cols,args.mines)
-            while not board.complete():
-                print(board)
-                print("'(o)pen r c' -> Opens the cell at row r column c")
-                print("'(f)lag r c' -> Flags the cell at row r column c")
-                move = input("Next move? ").split()
-                if len(move) == 3 and (move[0][0] == "o" or move[0][0] == "f"):
-                    if board.is_cell(move[1].upper(), move[2].upper()):
-                        if move[0] == "o" or move[0] == "open":
-                            if not board.open(move[1].upper(), move[2].upper()):
-                                board.reveal()
-                                print(board)
-                                print("BOOM! You hit a mine! A condolence letter will be sent to your next of kin.")
-                                print("\n\n\n")
-                                exit()
-                        elif move[0] == "f" or move[0] == "flag":
-                            board.flag(move[1].upper(), move[2].upper())
-                        else:
-                            print("Invalid command '" + move + "'. Please use open (or o) and flag (or f) to play")
-                    else:
-                        print("Invalid coordinates: " + move[1].upper() + " " + move[2].upper())
-                        time.sleep(2.0)
-            
-            board.reveal()
+        board = GameBoard(args.rows,args.cols,args.mines)
+        while not board.complete():
             print(board)
-            print("CONGRATULATIONS! You successfully found all the mines without triggering them!")
-            print("\n\n")
-            exit()
+            print("'(o)pen r c' -> Opens the cell at row r column c")
+            print("'(f)lag r c' -> Flags the cell at row r column c")
+            move = input("Next move? ").split()
+            if len(move) == 3 and (move[0][0] == "o" or move[0][0] == "f"):
+                if board.is_cell(move[1].upper(), move[2].upper()):
+                    if move[0] == "o" or move[0] == "open":
+                        if not board.open(move[1].upper(), move[2].upper()):
+                            board.reveal()
+                            print(board)
+                            print("BOOM! You hit a mine! A condolence letter will be sent to your next of kin.")
+                            print("\n\n\n")
+                            exit()
+                    elif move[0] == "f" or move[0] == "flag":
+                        board.flag(move[1].upper(), move[2].upper())
+                    else:
+                        print("Invalid command '" + move + "'. Please use open (or o) and flag (or f) to play")
+                else:
+                    print("Invalid coordinates: " + move[1].upper() + " " + move[2].upper())
+                    time.sleep(2.0)
+        
+        board.reveal()
+        print(board)
+        print("CONGRATULATIONS! You successfully found all the mines without triggering one!")
+        print("\n\n")
+        exit()
 
     except ValueError as e:
         exit(e)
