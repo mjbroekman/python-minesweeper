@@ -9,8 +9,9 @@ Raises:
 Returns:
     a Gamecell object
 """
-from colorama import Back, Style
+import sys
 import emoji
+from colorama import Back, Style
 
 class GameCell:
     """Gameboard cell. May or may not be a mine.
@@ -28,9 +29,9 @@ class GameCell:
         """
         self.is_mine = mine
         try:
-            self.label = name 
+            self.label = name
         except ValueError as e:
-            exit(e)
+            sys.exit(e)
 
 
     def __repr__(self):
@@ -41,10 +42,11 @@ class GameCell:
         """
         if self._is_flagged:
             return Style.DIM + Back.CYAN + emoji.emojize(":play_button:") + " " + Style.RESET_ALL
-        elif self._is_open:
+
+        if self._is_open:
             return Style.DIM + Back.CYAN + self.label + Style.RESET_ALL
-        else:
-            return Style.DIM + Back.CYAN + emoji.emojize(":blue_square:") + Style.RESET_ALL
+
+        return Style.DIM + Back.CYAN + emoji.emojize(":blue_square:") + Style.RESET_ALL
 
 
     @property
@@ -80,6 +82,18 @@ class GameCell:
             self._label = name
 
 
+    def name(self) -> str:
+        """Returns the non-emoji name of the cell
+
+        Returns:
+            str: Name of the cell
+        """
+        if self._int_name == -1:
+            return "M"
+
+        return str(self._int_name)
+
+
     @property
     def is_mine(self):
         """Returns whether this cell contains a mine
@@ -104,6 +118,7 @@ class GameCell:
         """Returns whether we have been flagged as a mine or not
         """
         return self._is_flagged
+
 
     def is_open(self) -> bool:
         """Have we been opened already. Used for filtering neighbor cells.
