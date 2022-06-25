@@ -17,7 +17,7 @@ Requirements
 
 Playing the game
 ================
-$ python game.py --rows ?? --cols ?? --mines ??
+$ python -m pysweeper --rows 15 --cols 15 --mines 35
 
 Make it as hard or as easy as you want with the following limitations:
 - There MUST be at least 1 cell in the board that does not contain a mine
@@ -40,4 +40,5 @@ For best results, use the Terminal.app in MacOS
 
 Demo Video
 ==========
-[Demo video](https://youtu.be/r56bWaF3K6E)
+* [Demo video](https://youtu.be/r56bWaF3K6E)
+* [Demo video 2](https://youtu.be/22VUAGYS2z0)
